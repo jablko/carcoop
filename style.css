@@ -1,0 +1,12 @@
+body
+{
+  margin: 0;
+  text-align: center;
+}
+
+body,
+body > div,
+html
+{
+  height: 100%;
+}

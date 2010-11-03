@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>CAN Locations</title>
+    <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAA8NDYozpf3qRuk9cbtlTOORScVaNIGmhl-syJ4ZwS9MNGoSlnNBTqZ-JNFk01ppRl24-WrjZE5NQV3w" type="text/javascript"></script>
+    <script type="text/javascript">
+    //<![CDATA[
+
+function onLoad() {
+  // Create a base icon for all of our markers that specifies the shadow, icon
+  // dimensions, etc.
+  var baseCarIcon = new GIcon();
+  baseCarIcon.iconSize = new GSize(20, 34);
+  baseCarIcon.iconAnchor = new GPoint(9, 34);
+  baseCarIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
+  baseCarIcon.shadowSize = new GSize(37, 34);
+  baseCarIcon.infoWindowAnchor = new GPoint(9, 2);
+  baseCarIcon.infoShadowAnchor = new GPoint(18, 25);
+
+  // Center the map near the CAN office
+  var map = new GMap2(document.getElementById("map"));
+  map.addControl(new GLargeMapControl());
+  map.addControl(new GMapTypeControl());
+  map.addControl(new GScaleControl());
+  map.setCenter(new GLatLng(49.285728, -123.112525), 14);
+
+  // Creates a marker whose info window displays the letter corresponding to
+  // the given index
+  function createMarker(point, index, name, description, category) {
+    // Create an icon for this point using our icon class from above
+    var icon = new GIcon(baseCarIcon);
+    icon.image = "http://www.cooperativeauto.net/resources/images/map/Marker" + category + ".gif";
+    var html = "<b>Map " + index + ": " + name + "</b><br /><br />" + description;
+    var marker = new GMarker(point, icon);
+    
+    // Show this marker's index in the info window when it is clicked
+    GEvent.addListener(marker, "click", function() {
+      marker.openInfoWindowHtml(html);
+    });
+  
+    return marker;
+  }
+  
+var point = new GLatLng(49.277339, -123.134425);
+var marker = createMarker(point, 1, "Beach", "Vancouver - Beach Avenue &amp; Thurlow<br />Street", "Blue");
+map.addOverlay(marker);var point = new GLatLng(49.208652, -122.919473);
+var marker = createMarker(point, 155, "NW - Ash &amp; Fourth Avenue", "New Westminster - Ash Street &amp;<br />Fourth Avenue", "YellowC");
+map.addOverlay(marker);var point = new GLatLng(49.267853, -123.071342);
+var marker = createMarker(point, 260, "Paloma", "Vancouver - East 3rd Avenue &amp; Cotton<br />Drive", "Yellow");
+map.addOverlay(marker);
+}
+
+function onUnload() {
+  GUnload();
+}
+
+    //]]>
+    </script>
+
+  </head>
+  <body onload="onLoad()" onunload="onUnload()">
+    <div id="header">
+     <h2>CAN car locations</h2>
+    </div>
+    <table border=3 cellspacing=0 cellpadding=0><tr><td>
+     <div id="map" style="width: 700px; height: 500px"></div>
+    </td></tr></table>
+    <div id="message">
+     <p>
+     <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </p>
+    </div>
+  </body>
+</html>
