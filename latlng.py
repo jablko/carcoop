@@ -15,10 +15,10 @@ def http_connection(url):
 
 class MainPage(webapp.RequestHandler):
   def get(self):
-    self.response.headers['Content-Type'] = 'application/json'
+    self.response.headers['Content-Type'] = 'application/vnd.google-earth.kml+xml'
 
     method = 'GET'
-    url = 'http://www.cooperativeauto.net/locations/googleMap'
+    url = 'http://www.cooperativeauto.net/resources/scripts/vehicle_finder'
 
     url = self.request.get('url', url)
     url = urlparse.urljoin(self.request.url, url)
@@ -28,13 +28,33 @@ class MainPage(webapp.RequestHandler):
     conn.request(method, url)
     response = conn.getresponse()
 
-    obj = []
+    data = response.read()
+    data = re.sub('<br />', ' ', data)
+
+    placemark = []
 
     # Avoid matching "map.setCenter(new GLatLng(..."
-    for match in re.finditer('var point = new GLatLng\((.+?), (.+?)\)', response.read()):
-      obj.append([float(match.group(1)), float(match.group(2))])
+    for match in re.finditer('var point = new GLatLng\((.*?), (.*?)\).*?createMarker\(.*?"(.*?)", "(.*?)"', data, re.S):
+      placemark.append("""<Placemark>
 
-    json.dump(obj, self.response.out)
+  <name>%s</name>
+
+  <description>%s</description>
+
+  <Point>
+    <coordinates>%s,%s</coordinates>
+  </Point>
+
+</Placemark>
+""" % (match.group(3), match.group(4), match.group(2), match.group(1)))
+
+    self.response.out.write("""<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    %s
+  </Document>
+</kml>
+""" % ''.join(placemark))
 
 if __name__ == '__main__':
   run_wsgi_app(webapp.WSGIApplication([('/latlng', MainPage)]))
