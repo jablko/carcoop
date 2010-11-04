@@ -29,8 +29,10 @@ class MainPage(webapp.RequestHandler):
     response = conn.getresponse()
 
     obj = []
-    for match in re.finditer('GLatLng\((.+?), (.+?)\)', response.read()):
-      obj.append([match.group(1), match.group(2)])
+
+    # Avoid matching "map.setCenter(new GLatLng(..."
+    for match in re.finditer('var point = new GLatLng\((.+?), (.+?)\)', response.read()):
+      obj.append([float(match.group(1)), float(match.group(2))])
 
     json.dump(obj, self.response.out)
 
