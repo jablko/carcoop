@@ -22,11 +22,13 @@ jQuery.ajax({
 
               success: function (data)
                 {
-                  jQuery.each(data, function ()
+                  $('coordinates', data).each(function ()
                     {
+                      var splits = $(this).text().split(',');
+
                       new google.maps.Marker({
                         map: map,
-                        position: new google.maps.LatLng(this[0], this[1]) });
+                        position: new google.maps.LatLng(splits[1], splits[0]) });
                     });
                 } });
 
