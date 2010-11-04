@@ -5,7 +5,7 @@ test('', function ()
     jQuery.ajax({
 
       data: { url: 'test/googleMap.html' },
-      url: '../latlng',
+      url: '../latlng?url=test/googleMap.html',
 
       success: function (data)
         {
