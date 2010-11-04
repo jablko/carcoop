@@ -1,3 +1,22 @@
+function resolve(relative, base)
+{
+  if (undefined === base)
+  {
+    base = location;
+  }
+
+  return base.protocol + '//' + base.host + base.pathname.replace(/[^/]*$/, '') + relative;
+}
+
+test('', function ()
+  {
+    equal(resolve('g', { protocol: 'http:',
+        host: 'a',
+        pathname: '/b/c/d;p',
+        search: '?q' }),
+      'http://a/b/c/g');
+  });
+
 test('', function ()
   {
     stop();

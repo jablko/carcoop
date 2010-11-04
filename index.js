@@ -6,6 +6,16 @@ jQuery.ajax({
     {
       jQuery(function ($)
         {
+          function resolve(relative, base)
+          {
+            if (undefined === base)
+            {
+              base = location;
+            }
+
+            return base.protocol + '//' + base.host + base.pathname.replace(/[^/]*$/, '') + relative;
+          }
+
           if (data)
           {
             $('<input type="submit" value="I\'m done with this car"/>').appendTo('body');
@@ -16,21 +26,8 @@ jQuery.ajax({
               mapTypeId: google.maps.MapTypeId.ROADMAP,
               zoom: 8 });
 
-            jQuery.ajax({
-
-              url: 'latlng',
-
-              success: function (data)
-                {
-                  $('coordinates', data).each(function ()
-                    {
-                      var splits = $(this).text().split(',');
-
-                      new google.maps.Marker({
-                        map: map,
-                        position: new google.maps.LatLng(splits[1], splits[0]) });
-                    });
-                } });
+            // http://code.google.com/p/gmaps-api-issues/issues/detail?id=2825
+            new google.maps.KmlLayer(resolve('latlng'), { map: map });
 
             if (navigator.geolocation)
             {
