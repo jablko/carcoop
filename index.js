@@ -24,16 +24,18 @@ jQuery.ajax({
           {
             var map = new google.maps.Map($('<div/>').appendTo('body')[0], {
               mapTypeId: google.maps.MapTypeId.ROADMAP,
-              zoom: 8 });
+              zoom: 12 });
 
             // http://code.google.com/p/gmaps-api-issues/issues/detail?id=2825
-            new google.maps.KmlLayer(resolve('latlng'), { map: map });
+            var kmlLayer = new google.maps.KmlLayer(resolve('latlng'), { map: map });
 
             if (navigator.geolocation)
             {
               navigator.geolocation.getCurrentPosition(function (position)
                 {
                   map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+
+                  kmlLayer.preserveViewport = true;
                 });
             }
             else if (google.gears)
@@ -41,6 +43,8 @@ jQuery.ajax({
               google.gears.factory.create('beta.geolocation').getCurrentPosition(function (position)
                 {
                   map.setCenter(new google.maps.LatLng(position.latitude, position.longitude));
+
+                  kmlLayer.preserveViewport = true;
                 });
             }
           }
