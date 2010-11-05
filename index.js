@@ -1,3 +1,22 @@
+var loaded;
+
+jQuery(function ($)
+  {
+    var $div = $('<div id="loading">Loading...</div>').appendTo('body');
+
+    (function loading()
+      {
+        $div.text($div.text() + '.');
+
+        setTimeout(loading, 1000);
+      })();
+
+   loaded = function()
+   {
+     $div.remove();
+   }
+  });
+
 jQuery.ajax({
 
   url: 'index',
@@ -18,11 +37,11 @@ jQuery.ajax({
 
           if (data)
           {
-            $('<input type="submit" value="I\'m done with this car"/>').appendTo('body');
+            $('<input type="submit" value="I\'m done with this car"/>').appendTo('#page');
           }
           else
           {
-            var map = new google.maps.Map($('<div/>').appendTo('body')[0], {
+            var map = new google.maps.Map($('#page')[0], {
               mapTypeId: google.maps.MapTypeId.ROADMAP });
 
             // http://code.google.com/p/gmaps-api-issues/issues/detail?id=2825
@@ -48,6 +67,8 @@ jQuery.ajax({
                   kmlLayer.preserveViewport = true;
                 });
             }
+
+            loaded();
           }
         });
     } });

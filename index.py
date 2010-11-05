@@ -5,16 +5,10 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 def escape(value):
-  return value
-    .replace('&', '&amp;')
-    .replace('<', '&lt;')
-    .replace('>', '&gt;')
+  return value.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 def unescape(value):
-  return value
-    .replace('&amp;', '&')
-    .replace('&lt;', '<')
-    .replace('&gt;', '>')
+  return value.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
 
 # Create HTTP connection from URL scheme, host, and port
 def http_connection(url):

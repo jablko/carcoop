@@ -5,8 +5,14 @@ body
 }
 
 body,
-body > div,
-html
+html,
+#page
 {
   height: 100%;
+}
+
+#loading
+{
+  position: absolute;
+  top: 0;
 }
