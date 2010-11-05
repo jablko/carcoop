@@ -13,6 +13,20 @@ def http_connection(url):
 
   return httplib.HTTPConnection(components[1])
 
+def slugify(value):
+  value = value.lower()
+
+  value = re.sub('[^0-9a-z]+', '-', value)
+
+  value = '-%s-' % value
+  value = value.replace('-a-', '-')
+  value = value.replace('-an-', '-')
+  value = value.replace('-the-', '-')
+
+  value = value.strip('-')
+
+  return value
+
 class Page(webapp.RequestHandler):
   def get(self):
     self.response.headers['Content-Type'] = 'application/json'
@@ -41,7 +55,7 @@ class MainPage(webapp.RequestHandler):
 
     # Avoid matching "map.setCenter(new GLatLng(..."
     for match in re.finditer('var point = new GLatLng\((.*?), (.*?)\).*?createMarker\(.*?"(.*?)", "(.*?)"', data, re.S):
-      placemark.append("""<Placemark>
+      placemark.append("""<Placemark id="%s">
 
   <name>%s</name>
 
@@ -52,7 +66,7 @@ class MainPage(webapp.RequestHandler):
   </Point>
 
 </Placemark>
-""" % (match.group(3), match.group(4), match.group(2), match.group(1)))
+""" % (slugify(match.group(3)), match.group(3), match.group(4), match.group(2), match.group(1)))
 
     self.response.out.write("""<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
