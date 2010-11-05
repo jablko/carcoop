@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import httplib, json, re, urlparse
+import httplib, re, urlparse
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 

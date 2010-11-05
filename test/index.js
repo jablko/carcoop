@@ -8,7 +8,7 @@ function resolve(relative, base)
   return base.protocol + '//' + base.host + base.pathname.replace(/[^/]*$/, '') + relative;
 }
 
-test('', function ()
+test('resolve()', function ()
   {
     equal(resolve('g', { protocol: 'http:',
         host: 'a',
@@ -17,7 +17,7 @@ test('', function ()
       'http://a/b/c/g');
   });
 
-test('', function ()
+test('index.kml', function ()
   {
     stop();
 
