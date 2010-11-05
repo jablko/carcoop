@@ -23,8 +23,7 @@ jQuery.ajax({
           else
           {
             var map = new google.maps.Map($('<div/>').appendTo('body')[0], {
-              mapTypeId: google.maps.MapTypeId.ROADMAP,
-              zoom: 12 });
+              mapTypeId: google.maps.MapTypeId.ROADMAP });
 
             // http://code.google.com/p/gmaps-api-issues/issues/detail?id=2825
             var kmlLayer = new google.maps.KmlLayer(resolve('index.kml'), { map: map });
@@ -34,6 +33,7 @@ jQuery.ajax({
               navigator.geolocation.getCurrentPosition(function (position)
                 {
                   map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+                  map.setZoom(14);
 
                   kmlLayer.preserveViewport = true;
                 });
@@ -43,6 +43,7 @@ jQuery.ajax({
               google.gears.factory.create('beta.geolocation').getCurrentPosition(function (position)
                 {
                   map.setCenter(new google.maps.LatLng(position.latitude, position.longitude));
+                  map.setZoom(14);
 
                   kmlLayer.preserveViewport = true;
                 });
