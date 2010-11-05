@@ -4,6 +4,18 @@ import httplib, re, urlparse
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
+def escape(value):
+  return value
+    .replace('&', '&amp;')
+    .replace('<', '&lt;')
+    .replace('>', '&gt;')
+
+def unescape(value):
+  return value
+    .replace('&amp;', '&')
+    .replace('&lt;', '<')
+    .replace('&gt;', '>')
+
 # Create HTTP connection from URL scheme, host, and port
 def http_connection(url):
   components = list(urlparse.urlparse(url))
@@ -66,7 +78,11 @@ class MainPage(webapp.RequestHandler):
   </Point>
 
 </Placemark>
-""" % (slugify(match.group(3)), match.group(3), match.group(4), match.group(2), match.group(1)))
+""" % (slugify(unescape(match.group(3))),
+        match.group(3),
+        match.group(4),
+        match.group(2),
+        match.group(1)))
 
     self.response.out.write("""<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
