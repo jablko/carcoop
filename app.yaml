@@ -13,9 +13,6 @@ handlers:
   static_files: index.js
   upload: index.js
 
-- url: /latlng
-  script: latlng.py
-
 - url: /style.css
   static_files: style.css
   upload: style.css

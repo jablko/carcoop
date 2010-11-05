@@ -1,5 +1,67 @@
 #!/usr/bin/env python
 
-print 'Content-Type: application/json'
-print
-print 'false'
+import httplib, json, re, urlparse
+from google.appengine.ext import webapp
+from google.appengine.ext.webapp.util import run_wsgi_app
+
+# Create HTTP connection from URL scheme, host, and port
+def http_connection(url):
+  components = list(urlparse.urlparse(url))
+
+  if 'https' == components[0]:
+    return httplib.HTTPSConnection(components[1])
+
+  return httplib.HTTPConnection(components[1])
+
+class Page(webapp.RequestHandler):
+  def get(self):
+    self.response.headers['Content-Type'] = 'application/json'
+
+    self.response.out.write('false')
+
+class MainPage(webapp.RequestHandler):
+  def get(self):
+    self.response.headers['Content-Type'] = 'application/vnd.google-earth.kml+xml'
+
+    method = 'GET'
+    url = 'http://www.cooperativeauto.net/resources/scripts/vehicle_finder'
+
+    url = self.request.get('url', url)
+    url = urlparse.urljoin(self.request.url, url)
+
+    conn = http_connection(url)
+
+    conn.request(method, url)
+    response = conn.getresponse()
+
+    data = response.read()
+    data = re.sub('<br />', ' ', data)
+
+    placemark = []
+
+    # Avoid matching "map.setCenter(new GLatLng(..."
+    for match in re.finditer('var point = new GLatLng\((.*?), (.*?)\).*?createMarker\(.*?"(.*?)", "(.*?)"', data, re.S):
+      placemark.append("""<Placemark>
+
+  <name>%s</name>
+
+  <description>%s</description>
+
+  <Point>
+    <coordinates>%s,%s</coordinates>
+  </Point>
+
+</Placemark>
+""" % (match.group(3), match.group(4), match.group(2), match.group(1)))
+
+    self.response.out.write("""<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    %s
+  </Document>
+</kml>
+""" % ''.join(placemark))
+
+if __name__ == '__main__':
+  run_wsgi_app(webapp.WSGIApplication([('/index', Page),
+    ('/index.kml', MainPage)]))

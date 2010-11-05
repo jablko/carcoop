@@ -27,7 +27,7 @@ jQuery.ajax({
               zoom: 12 });
 
             // http://code.google.com/p/gmaps-api-issues/issues/detail?id=2825
-            var kmlLayer = new google.maps.KmlLayer(resolve('latlng'), { map: map });
+            var kmlLayer = new google.maps.KmlLayer(resolve('index.kml'), { map: map });
 
             if (navigator.geolocation)
             {
